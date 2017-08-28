@@ -1,0 +1,79 @@
+<plugin>
+            <groupId>com.github.wvengen</groupId>
+            <artifactId>proguard-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>proguard</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sf.proguard</groupId>
+                    <artifactId>proguard-base</artifactId>
+                    <version>5.3.3</version>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>             
+            <configuration>
+                <obfuscate>true</obfuscate>
+                <includeDependency>true</includeDependency>
+                <options>
+                    <option>-target 1.8</option>                    
+                    <option>-dontoptimize</option>
+                    <option>-keepdirectories</option>
+                    <option>-renamesourcefileattribute SourceFile</option>
+                    <option>-keepparameternames</option>
+                    <option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod</option>
+                    <option><![CDATA[
+                        -keep public class com.proton.commons.** { public protected *; }
+                        ]]></option>    
+                            Here comes a lot of interface packages, public classes, etc as the last one    
+                    <option><![CDATA[
+                        -keepclassmembers enum * {
+                            public static **[] values();
+                            public static ** valueOf(java.lang.String);
+                        }                       
+                        ]]></option>        
+                    <option><![CDATA[
+                        -keepclassmembers class * { 
+                            @org.springframework.beans.factory.annotation.Autowired *; 
+                            @org.springframework.beans.factory.annotation.Qualifier *; 
+                            @org.springframework.beans.factory.annotation.Value *; 
+                            @org.springframework.beans.factory.annotation.Required *;
+                            @org.springframework.context.annotation.Bean *;
+                            @javax.annotation.PostConstruct *;
+                            @javax.annotation.PreDestroy *;
+                            @org.aspectj.lang.annotation.AfterReturning *;
+                            @org.aspectj.lang.annotation.Pointcut *;
+                            @org.aspectj.lang.annotation.AfterThrowing *;
+                            @org.aspectj.lang.annotation.Around *;
+                        }
+                        ]]></option>                            
+                    <option>-keep @org.springframework.stereotype.Service class *</option>
+                    <option>-keep @org.springframework.stereotype.Controller class * </option>
+                    <option>-keep @org.springframework.stereotype.Component class * </option>
+                    <option>-keep @org.springframework.stereotype.Repository class *</option>
+                    <option>-keep @org.springframework.cache.annotation.EnableCaching class *</option>
+                    <option>-keep @org.springframework.context.annotation.Configuration class *</option>
+                 Custom annotation
+                    <option>-keep @com.proton.ks.aop.ProtonLogging class *</option>
+                    <option>-keep @org.aspectj.lang.annotation.Aspect class *</option>
+                    <option>-keep @java.lang.annotation.Retention class *</option>
+                    <option>-keep @java.lang.annotation.Target class *</option>
+                    <option>-dontwarn javax.**</option>
+                    <option>-dontnote com.proton.ks.preferences.PreferenceFactory</option>
+                    
+                </options>
+                <addMavenDescriptor>false</addMavenDescriptor>
+                <libs>
+                    <lib>${java.home}/lib/rt.jar</lib>
+                    <lib>${java.home}/lib/jce.jar</lib>                      
+                    <lib>${java.home}/lib/jsse.jar</lib>
+                    <lib>${java.home}/lib/ext/sunjce_provider.jar</lib>
+                </libs>
+                <proguardVersion>5.3.3</proguardVersion>
+            </configuration>
+        </plugin>
